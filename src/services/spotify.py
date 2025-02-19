@@ -1,17 +1,26 @@
-from selenium import webdriver
+from seleniumwire import webdriver
 from selenium.webdriver.chrome.service import Service 
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pyautogui
-import time 
 
+import pyautogui
+import time
+
+PROXY_HOST = "brd.superproxy.io"
+PROXY_PORT = "33335"
+PROXY_USER = "brd-customer-hl_7a3a36a2-zone-residential_proxy1"
+PROXY_PASS = "8r39pf270ihp"
+
+PROXY = f"{PROXY_USER}:{PROXY_PASS}@{PROXY_HOST}:{PROXY_PORT}"
 
 def config_webdriver(url):
     service = Service() 
     options = webdriver.ChromeOptions()
+    
     options.add_experimental_option('detach', True)
     options.add_argument('--start-maximized')
+    options.add_argument('--proxy-server=%s' % PROXY)
 
     try:
         driver = webdriver.Chrome(service=service, options=options)
@@ -44,7 +53,7 @@ def find_playlist(driver):
 
 
 if __name__ == "__main__":
-    driver = config_webdriver('https://accounts.spotify.com/pt-BR/login')
+    driver = config_webdriver('https://accounts.spotify.com/en/login')
     login_spotify(driver)
     time.sleep(2)
     find_playlist(driver)
