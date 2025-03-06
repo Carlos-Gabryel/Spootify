@@ -54,7 +54,7 @@ def login_spotify(driver):
         web_player = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div/div/div/div/button[2]')))
         web_player.click() # botao clicavel do webplayer[
 
-        print('Login realizado com sucesso!')
+        print('Login bem-sucedido!')
         
     except Exception as e:
         print(f'Erro ao tentar fazer login no spotify {e}')
@@ -62,11 +62,14 @@ def login_spotify(driver):
 def find_playlist(driver):
     driver.find_element(By.XPATH, '//*[@id="global-nav-bar"]/div[2]/div/div[1]/span/div/form/div[2]/input').send_keys('.')
     cookies_bar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="onetrust-close-btn-container"]/button'))).click()
+    
     set_playlist = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div/ul/div/div[2]/li/div/div/div[1]'))).click()
-    playlist_img = driver.find_element(By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div[2]/ul/div/div[2]/li/div/div[3]/div/div/div[1]/img')
-    playlist_name = playlist_img.get_attribute('alt')
-
-    print(f'Playlist selecionada com sucesso!\n{playlist_name}')
+    try:
+        playlist_img = driver.find_element(By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div[2]/ul/div/div[2]/li/div/div[3]/div/div/div[1]/img')
+        playlist_name = playlist_img.get_attribute('alt')
+        print(f'Playlist selecionada\n{playlist_name}')
+    except Exception as e:
+        print(f'Não foi possível selecionar uma playlist {e}')
 
 if __name__ == "__main__":
     driver = config_webdriver("https://accounts.spotify.com/en/login")
