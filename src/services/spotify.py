@@ -20,7 +20,8 @@ PASSWORD=os.getenv('PASSWORD')
 #     }
 # }
 
-def config_webdriver(url):
+# Configuração do WebDriver
+def setup_webdriver(url):
     service = Service() 
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
@@ -29,7 +30,7 @@ def config_webdriver(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920,1080')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36')
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     options.add_experimental_option('detach', True)
     
     try:
@@ -42,38 +43,60 @@ def config_webdriver(url):
 
 def login_spotify(driver):
     try:
-        username = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-username')))
-        username.send_keys(USER_NAME) # user input
+        usuario = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-username')))
+        usuario.send_keys(USER_NAME) # digitar email
 
-        password = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-password')))
-        password.send_keys(PASSWORD) # password input
+        senha = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-password')))
+        senha.send_keys(PASSWORD) # digitar senha
 
-        login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button')))
-        login_button.click() # botao clicavel de login
+        botao_login = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button')))
+        botao_login.click() # botao clicavel de login
 
-        web_player = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]/div/div/div/div/button[2]')))
-        web_player.click() # botao clicavel do webplayer[
+        web_player = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
+        web_player.click() # botao clicavel do webplayer
 
-        print('Login bem-sucedido!')
-        
     except Exception as e:
         print(f'Erro ao tentar fazer login no spotify {e}')
 
-def find_playlist(driver):
-    driver.find_element(By.XPATH, '//*[@id="global-nav-bar"]/div[2]/div/div[1]/span/div/form/div[2]/input').send_keys('.')
-    cookies_bar = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH,'//*[@id="onetrust-close-btn-container"]/button'))).click()
-    
-    set_playlist = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div/ul/div/div[2]/li/div/div/div[1]'))).click()
-    try:
-        playlist_img = driver.find_element(By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div[2]/ul/div/div[2]/li/div/div[3]/div/div/div[1]/img')
-        playlist_name = playlist_img.get_attribute('alt')
-        print(f'Playlist selecionada\n{playlist_name}')
-    except Exception as e:
-        print(f'Não foi possível selecionar uma playlist {e}')
+def buscar_playlist(driver):
+    barra_cookies = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container')))
+    barra_cookies.click() # fecha a barra de cookies
 
+    # selecionar_playlist = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div/ul/div/div[2]/li/div/div/div[1]')))
+    # selecionar_playlist.click() # seleciona a primeira playlist que está salva na conta
+    botao_play = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[data-testid="play-button"]')))
+    botao_play.click()
+    
+    
 if __name__ == "__main__":
-    driver = config_webdriver("https://accounts.spotify.com/en/login")
+    driver = setup_webdriver("https://accounts.spotify.com/en/login")
     login_spotify(driver)
     time.sleep(2)
-    find_playlist(driver)
+    buscar_playlist(driver)
+    time.sleep(5)
+    
+    # determinando 48h de execução
+    tempo_execucao = 300
+    tempo_inicio = time.time()
+
+    musicas_tocadas = []
+    musica_atual = ""
+
+    while(time.time() - tempo_inicio) < tempo_execucao:
+        time.sleep(20)
+        try:
+            buscar_musica = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[4]/footer/div/div[1]/div/div[2]/div[1]/div').text
+            if buscar_musica != musica_atual:
+                musica_atual = buscar_musica
+                musicas_tocadas.append(musica_atual)
+                print(f"Nova faixa encontrada {buscar_musica} e adicionada a lista de faixas")
+            else:
+                    print("Nova faixa ainda não encontrada.")
+        except Exception as e:
+            print(e)
+        
+    print(f"A quantidade de plays foi de {len(musicas_tocadas)}")
+    driver.quit()
+        
+    
     
