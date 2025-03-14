@@ -4,21 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
-from dotenv import load_dotenv
 import os
 
-
-load_dotenv()
-USER_NAME=os.getenv('USER_NAME')
-PASSWORD=os.getenv('PASSWORD')
-
-# proxie_options = {
-#     'proxy': {
-#         'http': 'socks5://127.0.0.1:9050',
-#         'https': 'socks5://127.0.0.1:9050',
-#         'no_proxy':'localhost,127.0.0.1'
-#     }
-# }
 
 # Configuração do WebDriver
 def setup_webdriver(url):
@@ -30,7 +17,7 @@ def setup_webdriver(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920,1080')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36')
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     options.add_experimental_option('detach', True)
     
     try:
@@ -78,21 +65,25 @@ if __name__ == "__main__":
     musicas_tocadas = []
     musica_atual = ""
 
+    count = 0
+
     while(time.time() - tempo_inicio) < tempo_execucao:
         time.sleep(20)
         try:
             buscar_musica = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[4]/footer/div/div[1]/div/div[2]/div[1]/div').text
 
             if buscar_musica != musica_atual:
+                count+=1
                 musica_atual = buscar_musica
                 musicas_tocadas.append(musica_atual)
-                print(f"Nova faixa encontrada {buscar_musica} e adicionada a lista de faixas")
+                print(f"Nova faixa encontrada play número {count}")
             
         except Exception as e:
             print(e)
-        
-    print(f"A quantidade de plays foi de {len(musicas_tocadas)}")
+
     driver.quit()
+    print(f"A quantidade de plays foi de {len(musicas_tocadas)}")
+    
         
     
     
