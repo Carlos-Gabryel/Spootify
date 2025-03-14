@@ -9,7 +9,7 @@ import os
 
 # Configuração do WebDriver
 def setup_webdriver(url):
-    service = Service() 
+    service = Service(executable_path="/usr/local/bin/chromedriver") 
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
