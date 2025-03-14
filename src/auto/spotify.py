@@ -44,10 +44,10 @@ def setup_webdriver(url):
 def login_spotify(driver):
     try:
         usuario = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-username')))
-        usuario.send_keys(USER_NAME) # digitar email
+        usuario.send_keys('testespootify1@gmail.com') # digitar email
 
         senha = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-password')))
-        senha.send_keys(PASSWORD) # digitar senha
+        senha.send_keys('testespootify1') # digitar senha
 
         botao_login = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button')))
         botao_login.click() # botao clicavel de login
@@ -62,21 +62,17 @@ def buscar_playlist(driver):
     barra_cookies = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container')))
     barra_cookies.click() # fecha a barra de cookies
 
-    # selecionar_playlist = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="Desktop_LeftSidebar_Id"]/nav/div/div[1]/div[2]/div[2]/div/div/ul/div/div[2]/li/div/div/div[1]')))
-    # selecionar_playlist.click() # seleciona a primeira playlist que está salva na conta
     botao_play = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[data-testid="play-button"]')))
     botao_play.click()
-    
     
 if __name__ == "__main__":
     driver = setup_webdriver("https://accounts.spotify.com/en/login")
     login_spotify(driver)
     time.sleep(2)
     buscar_playlist(driver)
-    time.sleep(5)
     
     # determinando 48h de execução
-    tempo_execucao = 300
+    tempo_execucao = 172800
     tempo_inicio = time.time()
 
     musicas_tocadas = []
@@ -86,12 +82,12 @@ if __name__ == "__main__":
         time.sleep(20)
         try:
             buscar_musica = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[4]/footer/div/div[1]/div/div[2]/div[1]/div').text
+
             if buscar_musica != musica_atual:
                 musica_atual = buscar_musica
                 musicas_tocadas.append(musica_atual)
                 print(f"Nova faixa encontrada {buscar_musica} e adicionada a lista de faixas")
-            else:
-                    print("Nova faixa ainda não encontrada.")
+            
         except Exception as e:
             print(e)
         
