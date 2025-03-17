@@ -94,7 +94,7 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
 
-    driver.quit()
+        driver.quit()
     print(f"A quantidade de plays foi de {len(contador_plays)}")
     
         
