@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import gc
 import time
 
 # Configuração do WebDriver
@@ -13,15 +14,18 @@ def setup_webdriver(url):
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument('--disable-gpu')
+    options.add_argument('--start-maximized')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36')
     options.add_argument('--headless=new')
     
     try:
         driver = webdriver.Chrome(service=service, options=options)
         driver.get(url)
+        print("Webdriver iniciado.")
+
         return driver
     except Exception as e:
-        print(f'Erro ao iniciar o webdriver')
+        print(f'Erro ao iniciar o webdriver.')
         return None
 
 def login_spotify(driver):
@@ -41,7 +45,7 @@ def login_spotify(driver):
         print("Login bem-sucedido e webplayer selecionado.")
 
     except Exception as e:
-        print(f'Erro ao tentar fazer login no spotify {e}')
+        print(f'Erro ao tentar fazer login no Spotify {e}')
 
 def buscar_playlist(driver):
     try:
@@ -51,11 +55,12 @@ def buscar_playlist(driver):
         print("Barra de cookies fechada.")
     except:
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
+        pass
 
     botao_play = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[data-testid="play-button"]')))
     botao_play.click()
     
-    print("Playlist selecionada e iniciando primeira faixa...")
+    print("Playlist encontrada e selecionada.")
 
 if __name__ == "__main__":
     driver = setup_webdriver("https://accounts.spotify.com/en/login")
@@ -68,10 +73,9 @@ if __name__ == "__main__":
         tempo_execucao = 172800
         tempo_inicio = time.time()
 
-        musicas_tocadas = []
+        
         musica_atual = ""
-
-        count = 0
+        contador_plays = 0
 
         while(time.time() - tempo_inicio) < tempo_execucao:
             time.sleep(20)
@@ -79,16 +83,19 @@ if __name__ == "__main__":
                 buscar_musica = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[4]/footer/div/div[1]/div/div[2]/div[1]/div').text
 
                 if buscar_musica != musica_atual:
-                    count+=1
+                    contador_plays+=1
                     musica_atual = buscar_musica
-                    musicas_tocadas.append(musica_atual)
                     print(f"Nova faixa encontrada play número {count}")
                 
+                if contador_plays%5 == 0:
+                    gc.collect()
+                    print("Garbage collector limpo")
+
             except Exception as e:
                 print(e)
 
-        driver.quit()
-        print(f"A quantidade de plays foi de {len(musicas_tocadas)}")
+    driver.quit()
+    print(f"A quantidade de plays foi de {len(contador_plays)}")
     
         
     
