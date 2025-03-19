@@ -72,7 +72,6 @@ if __name__ == "__main__":
         # determinando 48h de execução
         tempo_execucao = 172800
         tempo_inicio = time.time()
-
         
         musica_atual = ""
         contador_plays = 0
@@ -85,7 +84,7 @@ if __name__ == "__main__":
                 if buscar_musica != musica_atual:
                     contador_plays+=1
                     musica_atual = buscar_musica
-                    print(f"Nova faixa encontrada play número {count}")
+                    print(f"Nova faixa encontrada play número {contador_plays}")
                 
                 if contador_plays%5 == 0:
                     gc.collect()

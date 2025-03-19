@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 
 def config_webdriver(url):
@@ -25,18 +26,35 @@ def config_webdriver(url):
         return None
 
 def login_amazon(driver):
-    botao_fazer_login = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="signInButton"]'))).click()
-    digitar_email = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ap_email"]'))).send_keys('testespootify1@gmail.com')
-    botao_continuar = driver.find_element(By.XPATH, '//*[@id="continue"]').click()
-    digitar_senha = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="ap_password"]'))).send_keys('spootify2025')
-    botao_login = driver.find_element(By.XPATH, '//*[@id="signInSubmit"]').click()
+    digitar_email = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, 'ap_email'))
+        )
+    digitar_email.send_keys('testespootify1@gmail.com')
 
-# def selecionar_playlist(driver):
-#     clicar_biblioteca = WebDriverWait(driver, 10).until(EC.element_to_be_selected((By.XPATH, "//*[@id="contextMenuHoverButton"]//button")))
+    botao_continuar = driver.find_element(By.ID, 'continue').click()
+
+    digitar_senha = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, 'ap_password'))
+        )
+    digitar_senha.send_keys('spootify2025')
+
+    botao_login = driver.find_element(By.ID, 'signInSubmit').click()
+
+def selecionar_playlist(driver):
+    time.sleep(4)
+    botao_biblioteca = driver.find_element(By.XPATH, "//button[@aria-label='Biblioteca']")
+    botao_biblioteca.click()
+    # time.sleep(2)
+    # botao_musicas =driver.find_element(By.ID, 'contextMenuOption1')
+    # botao_musicas.click()
 
 if __name__ == "__main__":
-    driver = config_webdriver('https://music.amazon.com/')
+    driver = config_webdriver('https://music.amazon.com.br/')
+    time.sleep(2)
+    botao_fazer_login = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "signInButton"))).click()
     login_amazon(driver)
+    time.sleep(2)
+    selecionar_playlist(driver)
     
     
     
