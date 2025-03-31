@@ -1,1 +1,0 @@
-Repositório de Automação do Spootify Enterprise LTDA.
