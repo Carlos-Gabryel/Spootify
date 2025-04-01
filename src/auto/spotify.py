@@ -19,15 +19,22 @@ CONTAS = ['wapasif996@birige.com', 'sejiv37959@dizigg.com']
 def setup_webdriver(url, porta):
     service = Service() 
     options = webdriver.FirefoxOptions()
+
+    # configuracao do drm
+    options.set_preference("media.eme.enabled", True)
+    options.set_preference("media.gmp-widevinecdm.visible", True)
+    options.set_preference("media.gmp-widevinecdm.enabled", True)
+    options.set_preference("media.gmp-manager.updateEnabled", True)
+    options.set_preference("media.gmp-provider.enabled", True)
     
     # configuracao do socks5
     options.set_preference("network.proxy.type", 1)
     options.set_preference("network.proxy.socks", 'localhost')
     options.set_preference("network.proxy.socks_port", porta)
-    print(porta, "A PORTA TA DANDO ISSO DAQUI")
     options.set_preference("network.proxy.socks_version", 5) 
     options.set_preference("network.proxy.socks_remote_dns", True)
-    
+
+
     try:
         driver = webdriver.Firefox(service=service, options=options)
         driver.get(url)
@@ -84,8 +91,6 @@ def buscar_playlist(driver):
     # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[data-testid='play-button']"))).click() 
     
 def executar_bots(porta, conta):
-    print(porta, conta, "ISSO QUE TA SAINDO AQUI")
-
     driver = setup_webdriver("https://accounts.spotify.com/en/login", porta)
 
     if driver:
@@ -110,7 +115,7 @@ def executar_bots(porta, conta):
                     if buscar_musica != musica_atual:
                         contador_plays+=1
                         musica_atual = buscar_musica
-                        print(f"Nova faixa encontrada play número {contador_plays} - [{vps}]")
+                        print(f"Nova faixa encontrada play número {contador_plays} - [{{}}]")
 
                 except Exception as e:
                     print(f'[{porta}] Erro ao buscar música: {e}')
