@@ -6,14 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from fake_useragent import UserAgent
 import time
 import multiprocessing
+import random
 
 ua = UserAgent()
 
-# 191.252.204.214 teste1
-# 191.252.219.163 teste2
-
-PORTAS = [34567, 34568]
-CONTAS = ['wapasif996@birige.com', 'sejiv37959@dizigg.com']
+PORTAS = [34567, 34568, 34569, 34570]
+CONTAS = ['wapasif996@birige.com', 'sejiv37959@dizigg.com', 'jemiho6565@infornma.com', 'yogak72926@motivue.com']
 
 # Configuração do WebDriver
 def setup_webdriver(url, porta):
@@ -34,7 +32,8 @@ def setup_webdriver(url, porta):
     options.set_preference("network.proxy.socks_version", 5) 
     options.set_preference("network.proxy.socks_remote_dns", True)
 
-
+    # options.add_argument('-headless')
+    
     try:
         driver = webdriver.Firefox(service=service, options=options)
         driver.get(url)
@@ -42,7 +41,7 @@ def setup_webdriver(url, porta):
         return driver
     
     except Exception as e:
-        print(f'Erro ao iniciar o webdriver na porta {proxy_port}\n')
+        print(f'Erro ao iniciar o webdriver na porta {porta}\n')
         driver.quit()
         return None
 
@@ -68,10 +67,10 @@ def login_spotify(driver, email):
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']"))
         ).click()
 
-        print(f"Login bem-sucedido e webplayer selecionado no email: {1} da porta: {1}.")
+        print(f"Login bem-sucedido e webplayer selecionado.")
 
     except Exception as e:
-        print(f'Erro ao tentar fazer login na conta: {1} da porta: {1}')
+        print(f'Erro ao tentar fazer login na conta')
 
 def buscar_playlist(driver):
     try:
@@ -82,53 +81,53 @@ def buscar_playlist(driver):
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
         pass
 
-    driver.get("https://open.spotify.com/playlist/6EmDufy5m126IOWrr8tCr9")
+    # redireciona para playlist desejada
+    # driver.get("https://open.spotify.com/playlist/6EmDufy5m126IOWrr8tCr9")
+    # print("Redirecionado para página da playlist")
 
-    # nome_playlist = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="main"]/div/div[2]/div[5]/div/div[2]/div[2]/div/main/section/div[1]/div[3]/div[3]/span[2]/h1'))).text
-    # print(f"Playlist {nome_playlist} encontrada e selecionada")
+    # time.sleep(random.randrange(4, 8))
+    # # dar play na playlist
+    # try:
+    #     play = driver.find_element(By.XPATH, "/html/body/div[4]/div/div[2]/div[5]/div/div[2]/div[2]/div/main/section/div[2]/div[2]/div[2]/div/div/div[1]/button")
+    #     play.click()
+    #     print("Playlist selecionada com sucesso")
+    # except Exception as e:
+    #     print(f"Erro ==> {e} <==")
 
-    # botao de play para iniciar musica
-    # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[data-testid='play-button']"))).click() 
-    
 def executar_bots(porta, conta):
     driver = setup_webdriver("https://accounts.spotify.com/en/login", porta)
 
     if driver:
-        try:
-            login_spotify(driver, conta)
-            buscar_playlist(driver)
+        login_spotify(driver, conta)
+        buscar_playlist(driver)
             
-            musica_atual = ""
-            contador_plays = 0
+        musica_atual = ""
+        contador_plays = 0
 
-            # buscar a quantidade de musicas que tem na playlist
-            qtd_musicas = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[5]/div/div[2]/div[2]/div/main/section/div[1]/div[3]/div[3]/div/div[2]/span[1]')
-            valor = int(qtd_musicas.text.replace(" songs", ""))
-            print(f"Foram encontradas {valor} músicas na playlist.")
+        #buscar a quantidade de musicas que tem na playlist
+        # qtd_musicas = WebDriverWait(driver, 10).until(EC.presence_of_element_located(By.XPATH, '//*[@id="main"]/div/div[2]/div[5]/div/div[2]/div[2]/div/main/section/div[1]/div[3]/div[3]/div/div[2]/span[1]'))
+        # valor = int(qtd_musicas.text.replace(" músicas", ""))
+        # print(f"Foram encontradas {valor} músicas na playlist.")
 
-            while driver:
-                time.sleep(15)
+        # while driver:
+        #     time.sleep(15)
 
-                try:
-                    buscar_musica = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[4]/footer/div/div[1]/div/div[2]/div[1]/div').text
+        #     try:
+        #         buscar_musica = driver.find_element(By.XPATH, '//*[@id="main"]/div/div[2]/div[4]/footer/div/div[1]/div/div[2]/div[1]/div').text
 
-                    if buscar_musica != musica_atual:
-                        contador_plays+=1
-                        musica_atual = buscar_musica
-                        print(f"Nova faixa encontrada play número {contador_plays} - [{{}}]")
+        #         if buscar_musica != musica_atual:
+        #             contador_plays+=1
+        #             musica_atual = buscar_musica
+        #             print(f"Nova faixa encontrada play número {contador_plays}")       
 
-                except Exception as e:
-                    print(f'[{porta}] Erro ao buscar música: {e}')
-
-            driver.quit()
-        except Exception as e:
-            print(f"[{porta}] Erro geral: {e} ")
+        #     except Exception as e:
+        #         print(f'Erro ao buscar música: {e}')
 
 if __name__ == "__main__":
     processos = []
 
     for porta, conta in zip(PORTAS, CONTAS):
-        p = multiprocessing.Process(target=executar_bots, args=(porta, conta))
+        p = multiprocessing.Process(target=executar_bots, args= (porta, conta))
         processos.append(p)
         p.start()
 
