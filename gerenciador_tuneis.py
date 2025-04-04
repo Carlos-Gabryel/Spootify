@@ -26,3 +26,7 @@ def recriar_tunel(porta, ip):
 def verificar_e_recriar_tunel(porta, ip):
     fechar_tunel(porta)
     recriar_tunel(porta, ip)
+
+
+# COMANDOS PARA FECHAR TODOS OS TUNEIS DE UMA SÓ VEZ
+# ps aux | grep ssh | awk '{print $1}' | xargs kill -9 
