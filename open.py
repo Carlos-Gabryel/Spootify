@@ -1,11 +1,13 @@
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from playwright.sync_api import sync_playwright
+import pytesseract
+from PIL import Image
+
 
 porta = 34567
 conta = 'doxex93700@bariswc.com'
@@ -13,24 +15,16 @@ conta = 'doxex93700@bariswc.com'
 # configuração do webdriver com Chrome
 def setup_webdriver(url):
     service = Service()  
-    options = Options()
+    options = webdriver.ChromeOptions()
+    options.add_argument("--start-maximized")
+    options.add_argument(f'--proxy-server=socks5://localhost:{porta}')  
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--mute-audio')
+    options.add_argument('--remote-debugging-port=9222')  
 
-    # configuracao do drm
-    options.set_preference("media.eme.enabled", True)
-    options.set_preference("media.gmp-widevinecdm.visible", True)
-    options.set_preference("media.gmp-widevinecdm.enabled", True)
-    options.set_preference("media.gmp-manager.updateEnabled", True)
-    options.set_preference("media.gmp-provider.enabled", True)
-    
-    # configuracao do socks5
-    options.set_preference("network.proxy.type", 1)
-    options.set_preference("network.proxy.socks", 'localhost')
-    options.set_preference("network.proxy.socks_port", porta)
-    options.set_preference("network.proxy.socks_version", 5) 
-    options.set_preference("network.proxy.socks_remote_dns", True)
-    
     try:
-        driver = webdriver.Firefox(service=service, options=options)
+        driver = webdriver.Chrome(service=service, options=options)
         driver.get(url)
         print(f"Webdriver iniciado na porta {porta}.")
         return driver
@@ -63,46 +57,50 @@ def login_spotify(driver):
         print(f"PEGOU NAO ESSA PORRAAAA {e}")
         driver.quit()
 
-def fechar_cookies(driver):
+def buscar_playlist(driver):
+    # Fechar a barra de cookies com Selenium
     try:
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container'))).click()
         print("Barra de cookies fechada")
-
     except:
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
 
-def buscar_playlist(driver):
-    playlist_atual = ""
-
+    # Usar Playwright para identificar e clicar na playlist
     try:
+        with sync_playwright() as p:
+            browser = p.chromium.connect_over_cdp("http://localhost:9222")  # Conecta ao navegador já aberto pelo Selenium
+            page = browser.contexts[0].pages[0]  # Obtém a aba atual
 
-        playlist1 = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'//li[@aria-posinset="1"]')))
-        playlist1.click()
+            # Captura uma screenshot da área onde o botão da playlist está
+            screenshot_path = "playlist_button.png"
+            page.screenshot(path=screenshot_path, full_page=True)
 
-        time.sleep(10)
-        dar_play = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[data-testid="play-button"]')))
-        dar_play.click()
-        nome_playlist = dar_play.get_attribute('aria-label')
-        print(f"Tocando atualmente: {nome_playlist.replace("Tocar", "")}")
+            # Usar OCR para identificar o botão da playlist
+            image = Image.open(screenshot_path)
 
-        time.sleep(10)
-        playlist2 = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f'//li[@aria-posinset="2"]')))
-        playlist2.click()
+            # Melhorar a imagem para OCR (opcional)
+            image = image.convert("L")  # Converter para escala de cinza
+            text = pytesseract.image_to_string(image, lang="eng")  # Definir idioma como inglês
 
-    
-   
+            print(f"Texto identificado pelo OCR: {text}")  # Log para depuração
+
+            if "TOP 10 Joyce Alane 2025" in text:  # Verifica se o texto está na imagem
+                print("Botão da playlist identificado com OCR.")
+                # Simula o clique no botão da playlist
+                page.click('text="TOP 10 Joyce Alane 2025"')  # Seleciona o botão pelo texto
+            else:
+                print("Botão da playlist não encontrado com OCR.")
     except Exception as e:
-        print(f"Elemento não encontrado {e}")    
-
+        print(f"Erro ao buscar playlist com Playwright e OCR: {e}")
 
 if __name__ == "__main__":
     driver = setup_webdriver("https://accounts.spotify.com/pt-BR/login")
 
     if driver:
         login_spotify(driver)
-        fechar_cookies(driver)
         buscar_playlist(driver)
-       
+        time.sleep(100)
+        
         # musica_atual = ""
         # contador_plays = 0
 
