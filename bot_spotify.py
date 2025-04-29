@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
@@ -9,6 +8,8 @@ import multiprocessing
 import time
 import random
 import gc
+
+from solveCaptcha import solve_captcha
 
 def funcao_principal(porta, conta):
     driver = setup_webdriver("https://accounts.spotify.com/pt-BR/login", porta)
@@ -28,7 +29,7 @@ def funcao_principal(porta, conta):
         while True: 
             try:
                 # tocar playlist1 
-                tocar_playlist(driver, "Entre o Pop e a Poesia")
+                tocar_playlist(driver, "Brisa Perrnambucana")
                 inicio_playlist1 = time.time()
 
                 while time.time() - inicio_playlist1 < random.uniform(3300, 3600): # loop com variacao de tempo entre 55 a 60min
@@ -205,12 +206,8 @@ def random_behavior(driver):
 
 
 if __name__ == "__main__":
-    portas = [34568, 34571, 35002]
-    contas = [
-        ('vopaje2986@oronny.com', 'testespootify1'),
-        ('vadaraj698@movfull.com', 'testespootify1'),
-        ('tifose9833@movfull.com', 'testespootify1')
-    ]
+    portas = [34568]
+    contas = [('vopaje2986@oronny.com', 'testespootify1')]
 
     processos = []
    

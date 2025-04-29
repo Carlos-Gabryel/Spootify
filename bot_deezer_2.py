@@ -1,62 +1,48 @@
 from selenium import webdriver
-from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium_stealth import stealth
 from fake_useragent import UserAgent
 import time
 import random
 
+PORTA = 34568
 ua = UserAgent(
-        browsers=['Chrome', 'Firefox', 'Edge', 'Opera'], 
-        os=['Windows', 'Linux', 'Mac'],
-        platforms=['desktop', 'mobile']
-    )
-
-# ssh -D 34567 -N -q -f root@191.252.38.91
-PORTA = 34567
-
-"""
-Este bot utiliza o firefox na inicialização do seu webdriver
-"""
-
+    browsers=['Chrome', 'Firefox', 'Edge', 'Opera'], 
+    os=['Windows', 'Linux', 'Mac'],
+    platforms=['desktop', 'mobile']
+)
 
 def setup_webdriver(url):
     """Função principal responsável pelas configurações e inicialização do webdriver."""
 
-    options=Options()
+    options=webdriver.ChromeOptions()
     service=Service()
 
-    # configurações de instalação do widevine (server para o funcionamneto do DRM)
-    options.set_preference("media.eme.enabled", True)
-    options.set_preference("media.gmp-widevinecdm.visible", True)
-    options.set_preference("media.gmp-widevinecdm.enabled", True)
-    options.set_preference("media.gmp-manager.updateEnabled", True)
-    options.set_preference("media.gmp-provider.enabled", True)
+    options.add_argument("--no-sandbox") # desabilita o sandbox
+    options.add_argument("--disable-dev-shm-usage") # desabilita o uso do /dev/shm contornando problemas de memoria
+    options.add_argument("--disable-gpu") # desabilita a gpu 
+    options.add_argument("--disable-extensions") # desabilita as extensoes do chrome
+    options.add_argument("--disable-application-cache") # desabilita o cache do chrome
+    options.add_argument("--start-maximized") # inicializa em tela cheia
+    options.add_argument(f"user-agent={ua.random}") # randomiza o user agent com as definições do fake_useragent
+    options.add_argument(f"--proxy-server=socks5://localhost:{PORTA}") # define o proxy para o socks5 na porta 34567
 
-    # configurações de proxys e rede
-    options.set_preference("network.proxy.type", 1)
-    options.set_preference("network.proxy.socks", 'localhost')
-    options.set_preference("network.proxy.socks_port", PORTA)
-    options.set_preference("network.proxy.socks_version", 5) 
-    options.set_preference("network.proxy.socks_remote_dns", True)
-    
-    # configurações gerais
-    options.set_preference("useAutomationExtension", False)
-    options.set_preference("general.useragent.override", ua.random)
-    # options.add_argument("-headless")  # executar firefox no modo headless
+    # removedores de flag de automação
+    options.add_argument("--disable-blink-features=AutomationControlled") 
+    options.add_experimental_option("excludeSwitches", ["enable-automation"]) 
+    options.add_experimental_option("useAutomationExtension", False) 
 
     try:
-        driver = webdriver.Firefox(service=service, options=options)
+        driver = webdriver.Chrome(options=options, service=service)
         driver.get(url)
         print(f"Webdriver iniciado na porta {PORTA}.")
         return driver
-    
+
     except Exception as e:
         print(f'Erro ao iniciar o webdriver na porta {PORTA}: {e}')
-        driver.quit()
+        
 
 def login_deezer(driver):
     """Função responsável por realizar login das contas."""
@@ -78,7 +64,7 @@ def login_deezer(driver):
         # iteração para simular digitação humana
         for char in email:
             send_email.send_keys(char)
-            time.sleep(random.uniform(0.2, 0.5))
+            time.sleep(random.uniform(0.1, 0.55))
 
         print(f"Email {email} digitado.")
 
@@ -86,13 +72,13 @@ def login_deezer(driver):
         # iteração para simular digitação humana
         for char in password:
             send_pass.send_keys(char)
-            time.sleep(random.uniform(0.2, 0.5))
+            time.sleep(random.uniform(0.1, 0.55))
 
         print("Senha digitada.")
 
         login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@data-testid="login-button"]')))
         login_button.click()
-        print("Login bem-sucedido.")
+        print("Botão de login clicado. Aguardando redirecionamento para página principal.")
 
     except Exception as e:
         print(f"Procedimento de login não efetuado com sucesso: {e}")
@@ -101,3 +87,4 @@ def login_deezer(driver):
 if __name__ == "__main__":
     driver=setup_webdriver("https://account.deezer.com/pt-br/login/")
     login_deezer(driver)
+    time.sleep(100)
