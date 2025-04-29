@@ -9,8 +9,6 @@ import time
 import random
 import gc
 
-from solveCaptcha import solve_captcha
-
 def funcao_principal(porta, conta):
     driver = setup_webdriver("https://accounts.spotify.com/pt-BR/login", porta)
 
@@ -18,8 +16,8 @@ def funcao_principal(porta, conta):
         login_spotify(driver, conta)
         fechar_cookies(driver)
         time.sleep(random.uniform(1, 4))
-        random_behavior(driver)
-        time.sleep(random.uniform(5, 10))
+        # random_behavior(driver)
+        # time.sleep(random.uniform(5, 10))
         
         musica_atual = ""
         contador_plays = 0
@@ -29,7 +27,7 @@ def funcao_principal(porta, conta):
         while True: 
             try:
                 # tocar playlist1 
-                tocar_playlist(driver, "Brisa Perrnambucana")
+                tocar_playlist(driver, "Brisa Pernambucana")
                 inicio_playlist1 = time.time()
 
                 while time.time() - inicio_playlist1 < random.uniform(3300, 3600): # loop com variacao de tempo entre 55 a 60min
@@ -206,7 +204,7 @@ def random_behavior(driver):
 
 
 if __name__ == "__main__":
-    portas = [34568]
+    portas = [34567]
     contas = [('vopaje2986@oronny.com', 'testespootify1')]
 
     processos = []

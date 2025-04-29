@@ -10,7 +10,7 @@ url = 'https://www.google.com/recaptcha/api2/demo'
 driver = webdriver.Chrome()
 driver.get(url)
 
-result = solve_captcha('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXw', url)
+result = solve_captcha('6Le-wvkSAAAAAPBMRTvw0Q4Muexq9bi0DJwx_mJ-', url)
 
 code = result['code']
 print(code)

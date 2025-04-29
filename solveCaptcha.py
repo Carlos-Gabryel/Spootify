@@ -12,7 +12,9 @@ def solve_captcha(sitekey, url):
     try:
         result = solver.recaptcha(
             sitekey=sitekey,
-            url=url)
+            url=url,
+            enterprise=1
+            )
 
     except Exception as e:
         print(e)
