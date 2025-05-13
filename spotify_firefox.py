@@ -5,51 +5,74 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import multiprocessing
+from fake_useragent import UserAgent
 import time
 import random
 import gc
+
+ua = UserAgent(
+    browsers=['Chrome', 'Firefox', 'Edge', 'Opera'], 
+    os=['Windows', 'Linux', 'Mac'],
+    platforms=['desktop', 'mobile']
+)
 
 def funcao_principal(porta, conta):
     driver = setup_webdriver("https://accounts.spotify.com/pt-BR/login", porta)
 
     if driver:
-        login_spotify(driver, conta)
+        login_spotify(driver, conta, porta)
+
+        try:
+            fechar_iframeOfertas(driver, porta)
+        except: 
+            print(f"Banner de ofertas não encontrado {porta}")
+            pass
+
         fechar_cookies(driver)
         time.sleep(random.uniform(1, 4))
-        # random_behavior(driver)
-        # time.sleep(random.uniform(5, 10))
         
         musica_atual = ""
         contador_plays = 0
 
-        playlists = ["Brisa Pernambucana", "Entre o Pop e a Poesia"]
-
-        while True: 
+        while True:
+            try:
+                fechar_iframeOfertas(driver)
+            except: 
+                print(f"Banner de ofertas não encontrado {porta}.")
+                pass
+            
+            time.sleep(15)
             try:
                 # tocar playlist1 
-                tocar_playlist(driver, "Brisa Pernambucana")
+                tocar_playlist(driver, "Léo Foguete 2025  🚀 As Melhores | Obrigado Deus | Última Noite | Cópia Proibida | Quem de Nós Dois")
+                print(f"Tocando Playlist 1... {porta}")
                 inicio_playlist1 = time.time()
 
-                while time.time() - inicio_playlist1 < random.uniform(3300, 3600): # loop com variacao de tempo entre 55 a 60min
+                while time.time() - inicio_playlist1 < random.uniform(3300, 3600): # looping com variacao de tempo para trocar de playlist
                     time.sleep(15)
+
                     try:
                         buscar_musica = driver.find_element(By.CSS_SELECTOR, '[data-testid="now-playing-widget"]').text
                         buscar_musica = buscar_musica.replace("Tocando agora", "").strip()
-
                         if buscar_musica != musica_atual:
                             contador_plays += 1
                             musica_atual = buscar_musica
-                            print(f"Nova faixa encontrada play: {contador_plays}")
+                            print(f"Nova faixa encontrada play {porta}: {contador_plays}")
                     except Exception as e:
-                        print(f'Erro ao buscar música na Playlist 1: {e}')
-                  
+                                print(f'Erro ao buscar música na Playlist 1 ({porta}) {e}')
+
                 # tocar Playlist 2
-                gc.collect()
-                tocar_playlist(driver, "Brisa Pernambucana")
-                print("Tocando Playlist 2...")
+                try:
+                    gc.collect()
+                    print(f"Garbage collector limpo! {porta}")
+                except:
+                    print(f"Erro ao limpar o garbage collector {porta}")
+                
+                tocar_playlist(driver, "PURO SUCO DO BRASIL")
+                print(f"Tocando Playlist 2 {porta}...")
                 inicio_playlist2 = time.time()
 
-                while time.time() - inicio_playlist2 < random.uniform(3300, 3600): # loop com variacao de tempo entre 55 a 60min
+                while time.time() - inicio_playlist2 < random.uniform(50, 60): # loop com variacao de tempo entre 55 a 60min
                     time.sleep(15)
                     try:
                         buscar_musica = driver.find_element(By.CSS_SELECTOR, '[data-testid="now-playing-widget"]').text
@@ -58,12 +81,12 @@ def funcao_principal(porta, conta):
                         if buscar_musica != musica_atual:
                             contador_plays += 1
                             musica_atual = buscar_musica
-                            print(f"Nova faixa encontrada play: {contador_plays}")
+                            print(f"Nova faixa encontrada play {porta} {contador_plays}")
                     except Exception as e:
-                        print(f'Erro ao buscar música na Playlist 2: {e}')
+                        print(f'Erro ao buscar música na Playlist 2 {porta}{e}')
 
             except Exception as e:
-                print(f"Erro no loop principal: {e}")
+                print(f"Erro no loop principal {porta} {e}")
                 break
 
 # configuração do webdriver com Chrome
@@ -96,7 +119,7 @@ def setup_webdriver(url, porta):
         print(f'Erro ao iniciar o webdriver na porta {porta}: {e}')
         driver.quit()
 
-def login_spotify(driver, conta):
+def login_spotify(driver, conta, porta):
     try:
         email, senha = conta
         digitar_login = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-username')))
@@ -113,7 +136,7 @@ def login_spotify(driver, conta):
         botao_login = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button')))
         botao_login.click()
 
-        print(f"Login realizado com sucesso no email: {email}")
+        print(f"Login realizado com sucesso no email: {email} na porta {porta}")
     except Exception as e:
         print(f"Erro ao fazer login no Spotify {e}")
         driver.quit()
@@ -123,8 +146,40 @@ def login_spotify(driver, conta):
         webplayer = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
         webplayer.click()
     except Exception as e:
-        print(f"PEGOU NAO ESSA PORRAAAA {e}")
+
+        print(f"PORTA QUE CAIU {porta} - {email}")
         driver.quit()
+
+def tocar_playlist(driver, nome_playlist):
+    try:
+        # Clica na playlist com base no nome
+        playlist = WebDriverWait(driver, 15).until(
+            EC.element_to_be_clickable((By.XPATH, f'//div[@aria-label="Sua Biblioteca"]//div[@role="row" and .//button[contains(@aria-label, "Tocar {nome_playlist}")]]'
+                )))
+        playlist.click()
+        print(f"Playlist encontrada: {nome_playlist}")
+    except:
+        print(f"Webdriver não conseguiu selecionar a playlist {nome_playlist}")
+
+    time.sleep(10)
+    try:
+        botao_play = WebDriverWait(driver, 15).until(
+            EC.element_to_be_clickable((
+                By.XPATH, f'//div[@aria-label="Sua Biblioteca"]//div[@role="group" and @data-encore-id="listRow"]//button[@data-encore-id="buttonTertiary" and @aria-label="Tocar {nome_playlist}"]'
+                )))
+        botao_play.click()
+        print(f"Playlist '{nome_playlist}' tocada com sucesso.")
+    
+    except Exception as e:
+        print(f"Erro ao dar play na playlist{nome_playlist} => {e} <=")
+
+def fechar_iframeOfertas(driver, porta):
+    try:
+        WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, '//html[@dir="auto"]//button[@data-click-to-action-action="DISMISS"]'))).click()
+        print(f"Banner de ofertas fechado {porta}")
+
+    except:
+        print(f"Banner de ofertas não encontrado {porta}.")
 
 def fechar_cookies(driver):
     try:
@@ -134,78 +189,17 @@ def fechar_cookies(driver):
     except:
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
 
-def tocar_playlist(driver, nome_playlist):
-    try:
-        # Clica na playlist com base no nome
-        playlist = WebDriverWait(driver, 15).until(
-            EC.element_to_be_clickable((By.XPATH, f'//li[.//span[contains(text(), "{nome_playlist}")]]')))
-        playlist.click()
-        print(f"Playlist encontrada: {nome_playlist}")
-
-        time.sleep(10)
-        botao_play = WebDriverWait(driver, 15).until(
-            EC.element_to_be_clickable((
-                By.XPATH,  f'//div[@data-testid="action-bar"]//button[@data-testid="play-button" and contains(@aria-label, "Tocar {nome_playlist}")]'
-                )))
-        botao_play.click()
-        
-    except Exception as e:
-        print(f"Erro ao dar play na playlist '{nome_playlist}': {e}")
-
-def random_behavior(driver):
-    action = random.randint(2, 3)
-
-    if action == 2:
-        try:
-            button_profile = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='user-widget-link']")))
-            button_profile.click()
-            time.sleep(random.uniform(2.1, 5.4))
-
-            config_button = driver.find_element(By.XPATH, '//a[span[text()="Configurações"]]')
-            config_button.click()
-
-        except Exception as e:
-            print(f"Erro na ação 2: {e}")
-   
-    elif action == 3:
-        try:
-            # clicar na barra de busca
-            search_input = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, '[data-testid="search-input"]'))
-            )
-            time.sleep(random.uniform(1.2, 4.5))
-
-            # digitar o artista/gênero aleatório
-            chave = random.choice([
-                "funk", "Sertanejo", "Pagode", "rap", "Rock", "mpb", "Eletrônica",
-                "Caetano Veloso", "Djavan", "Legião Urbana", "Luan Santana",
-                "Marília Mendonça", "Guilherme Arantes", "Gilberto Gil", "Elis Regina",
-                "Anitta", "Ivete Sangalo", "Wesley Safadão", "Zezé Di Camargo",
-                "Chitãozinho e Xororó", "Fernando e Sorocaba", "Bruno e Marrone",
-                "Jorge e Mateus", "Henrique e Juliano", "Matheus e Kauan",
-                "Maiara e Maraisa", "Joyce Alane", "Ana Carolina", "Adriana Calcanhotto",
-                "Maria Gadú", "Ana Vilela", "Ana Cañas", "Piseiro", "Forró",
-                "Samba", "Bossa Nova", "Rock Nacional", "Rock Internacional",
-                "Pop Nacional", "Pop Internacional", "João Gomes", "João Neto e Frederico",
-                "João Bosco e Vinícius", "João Carlos", "João do Morro", "João e Rafael",
-                "The Score", "The Killers", "The Strokes"
-            ])
-
-            print(f"Buscando por: {chave}")
-            # aguardar e digitar na caixa de busca
-            for char in chave:
-                search_input.send_keys(char)
-                time.sleep(random.uniform(0.1, 0.4))
-
-            # melhoria => selecionar card ou ouvir musica aleatoria da tela 
-
-        except:
-            print("Nenhuma música clicável encontrada ou card não tinha faixa")
-
-
 if __name__ == "__main__":
-    portas = [34567]
-    contas = [('vopaje2986@oronny.com', 'testespootify1')]
+    portas = [
+        34567, 34568, 34569, 34570, 34571
+        ]
+    contas = [
+        ("famapep653@jazipo.com", "testespootify1"),
+        ("ritix51751@jazipo.com", "testespootify1"),
+        ("sefok14777@deusa7.com", "testespootify1"),
+        ("jicidit667@bamsrad.com", "testespootify1"),
+        ("hasoba1421@deusa7.com", "testespootify1")
+        ]
 
     processos = []
    
