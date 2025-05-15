@@ -217,6 +217,8 @@ def cadastro_spotify(driver, email_gerado):
         botao_inscrever.click()
         print("Botão de avançar clicado.")
 
+        time.sleep(5)
+
         if conta_criada(driver):
             # Verifica se a conta foi criada com sucesso
             print("Conta criada com sucesso!")
@@ -234,10 +236,8 @@ def conta_criada(driver, timeout=20):
                 or d.find_elements(By.XPATH, "//button[@data-testid='user-widget-link']")
             )
         )
-        print("Conta criada com sucesso!")
         return True
     except:
-            print("Conta *não* foi criada dentro do tempo limite.")
             return False
 
 
@@ -297,7 +297,7 @@ def obter_nome():
 
 
 def salvar_dados_csv(id_conta, email, senha):
-    nome_arquivo = "contas_criadas.csv"
+    nome_arquivo = "contas_criadas2.csv"
     try:
         arquivo_existe = False
         try:

@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import multiprocessing
+import subprocess
 from fake_useragent import UserAgent
 import time
 import random
@@ -146,7 +147,7 @@ def login_spotify(driver, conta, porta):
         webplayer = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
         webplayer.click()
     except Exception as e:
-
+        
         print(f"PORTA QUE CAIU {porta} - {email}")
         driver.quit()
 
@@ -183,18 +184,30 @@ def fechar_iframeOfertas(driver, porta):
 
 def fechar_cookies(driver):
     try:
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container'))).click()
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container'))).click()
         print("Barra de cookies fechada")
 
     except:
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
 
 if __name__ == "__main__":
+
+    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/scripts-tuneis/tuneis_firefox.sh"
+
+    try:
+        print("Iniciando tuneis SSH...")
+        subprocess.run(["bash", caminho_tuneis], check=True)
+        print("Túneis SSH iniciados com sucesso.")
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao iniciar os túneis SSH: {e}")
+        exit(1)
+
+
     portas = [
         34567, 34568, 34569, 34570, 34571
         ]
     contas = [
-        ("famapep653@jazipo.com", "testespootify1"),
+        ("hifogi7424@jazipo.com", "testespootify1"),
         ("ritix51751@jazipo.com", "testespootify1"),
         ("sefok14777@deusa7.com", "testespootify1"),
         ("jicidit667@bamsrad.com", "testespootify1"),

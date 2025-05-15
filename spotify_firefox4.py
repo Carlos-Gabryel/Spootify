@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import multiprocessing
+import subprocess
 from fake_useragent import UserAgent
 import time
 import random
@@ -189,23 +190,30 @@ def fechar_cookies(driver):
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
 
 if __name__ == "__main__":
+
+    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/scripts-tuneis/tuneis_firefox4.sh"
+
+    try:
+        print("Iniciando tuneis SSH...")
+        subprocess.run(["bash", caminho_tuneis], check=True)
+        print("Túneis SSH iniciados com sucesso.")
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao iniciar os túneis SSH: {e}")
+        exit(1)
+
     portas = [
-        34567, 34568, 34569, 34570, 34571
-        # 35000, 35001, 35002, 35003, 35004,
-        # 35555, 35556, 35557, 35558, 35559,
-        # 35560, 35561, 35562, 35563, 35564, 
-        # 35565, 35566
+        35560, 35561, 35562, 35563, 35564
         ]
     contas = [
-        ("famapep653@jazipo.com", "testespootify1"),
-        ("ritix51751@jazipo.com", "testespootify1"),
-        ("sefok14777@deusa7.com", "testespootify1"),
-        ("jicidit667@bamsrad.com", "testespootify1"),
-        ("hasoba1421@deusa7.com", "testespootify1")
+        ("totoho6502@hazhab.com", "testespootify1"),
+        ("fevew66968@inkight.com", "testespootify1"),
+        ("cifihe5368@bamsrad.com", "testespootify1"),
+        ("bivolop886@bamsrad.com", "testespootify1"),
+        ("kijid36304@jazipo.com", "testespootify1")
         ]
 
     processos = []
-   
+    
     for porta, conta in zip(portas, contas):
         p = multiprocessing.Process(target=funcao_principal, args=(porta, conta))
         processos.append(p)

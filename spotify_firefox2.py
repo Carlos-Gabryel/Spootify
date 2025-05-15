@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import multiprocessing
+import subprocess
 from fake_useragent import UserAgent
 import time
 import random
@@ -189,6 +190,17 @@ def fechar_cookies(driver):
         print("Barra de cookies não encontrada ou já fechada anteriormente, continuando...")
 
 if __name__ == "__main__":
+
+    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/scripts-tuneis/tuneis_firefox2.sh"
+
+    try:
+        print("Iniciando tuneis SSH...")
+        subprocess.run(["bash", caminho_tuneis], check=True)
+        print("Túneis SSH iniciados com sucesso.")
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao iniciar os túneis SSH: {e}")
+        exit(1)
+
     portas = [
         35000, 35001, 35002, 35003, 35004
     
