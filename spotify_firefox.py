@@ -118,7 +118,7 @@ def setup_webdriver(url, porta):
 
     except Exception as e:
         print(f'Erro ao iniciar o webdriver na porta {porta}: {e}')
-        driver.quit()
+        # driver.quit()
 
 def login_spotify(driver, conta, porta):
     try:
@@ -147,9 +147,8 @@ def login_spotify(driver, conta, porta):
         webplayer = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
         webplayer.click()
     except Exception as e:
-        
         print(f"PORTA QUE CAIU {porta} - {email}")
-        driver.quit()
+        # driver.quit()
 
 def tocar_playlist(driver, nome_playlist):
     try:

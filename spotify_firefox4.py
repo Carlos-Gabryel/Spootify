@@ -108,7 +108,7 @@ def setup_webdriver(url, porta):
     options.set_preference("network.proxy.socks_port", porta)
     options.set_preference("network.proxy.socks_version", 5) 
     options.set_preference("network.proxy.socks_remote_dns", True)
-    # options.add_argument("-headless")
+    options.add_argument("-headless")
     
     try:
         driver = webdriver.Firefox(service=service, options=options)
@@ -147,8 +147,8 @@ def login_spotify(driver, conta, porta):
         webplayer = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
         webplayer.click()
     except Exception as e:
-
-        print(f"PEGOU NAO ESSA PORRAAAA {e}")
+        print(f"Erro ao selecionar webplayer ({porta}) {e}")
+        driver.quit()
 
 def tocar_playlist(driver, nome_playlist):
     try:
@@ -205,11 +205,11 @@ if __name__ == "__main__":
         35560, 35561, 35562, 35563, 35564
         ]
     contas = [
-        ("totoho6502@hazhab.com", "testespootify1"),
-        ("fevew66968@inkight.com", "testespootify1"),
-        ("cifihe5368@bamsrad.com", "testespootify1"),
-        ("bivolop886@bamsrad.com", "testespootify1"),
-        ("kijid36304@jazipo.com", "testespootify1")
+        ("rewebi6611@hazhab.com", "testespootify1"),
+        ("lohenep686@daupload.com", "testespootify1"),
+        ("hevahe8879@neuraxo.com", "testespootify1"),
+        ("vejege7939@bamsrad.com", "testespootify1"),
+        ("xaleb15656@magpit.com", "testespootify1")
         ]
 
     processos = []

@@ -108,7 +108,7 @@ def setup_webdriver(url, porta):
     options.set_preference("network.proxy.socks_port", porta)
     options.set_preference("network.proxy.socks_version", 5) 
     options.set_preference("network.proxy.socks_remote_dns", True)
-    # options.add_argument("-headless")
+    options.add_argument("-headless")
     
     try:
         driver = webdriver.Firefox(service=service, options=options)
@@ -201,14 +201,15 @@ if __name__ == "__main__":
         exit(1)
 
     portas = [
-        35555, 35556, 35557, 35558, 35559
+        35555, 35557, 35558, 35559
         ]
+    # 35556,
     contas = [
-        ("bayehef361@deusa7.com", "testespootify1"),
-        ("tokolo7905@deusa7.com", "testespootify1"),
-        ("rebeg66097@hazhab.com", "testespootify1"),
-        ("xomada5684@daupload.com", "testespootify1"),
-        ("pojeton112@inkight.com", "testespootify1")
+        ("bokehox847@hazhab.com", "testespootify1"),
+        # ("mocal26211@inkight.com", "testespootify1"), # conta banida
+        ("hipat16822@magpit.com", "testespootify1"),
+        ("tagava8450@bamsrad.com", "testespootify1"),
+        ("vehape5044@daupload.com", "testespootify1")
         ]
 
     processos = []

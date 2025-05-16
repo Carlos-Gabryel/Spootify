@@ -118,7 +118,7 @@ def setup_webdriver(url, porta):
 
     except Exception as e:
         print(f'Erro ao iniciar o webdriver na porta {porta}: {e}')
-        driver.quit()
+        # driver.quit()
 
 def login_spotify(driver, conta, porta):
     try:
@@ -147,8 +147,8 @@ def login_spotify(driver, conta, porta):
         webplayer = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
         webplayer.click()
     except Exception as e:
-
-        print(f"PEGOU NAO ESSA PORRAAAA {e}")
+        print(f"PORTA QUE CAIU {porta} - {email}")
+        # driver.quit()
 
 def tocar_playlist(driver, nome_playlist):
     try:
@@ -183,7 +183,7 @@ def fechar_iframeOfertas(driver, porta):
 
 def fechar_cookies(driver):
     try:
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container'))).click()
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, 'onetrust-close-btn-container'))).click()
         print("Barra de cookies fechada")
 
     except:
@@ -191,7 +191,7 @@ def fechar_cookies(driver):
 
 if __name__ == "__main__":
 
-    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/scripts-tuneis/tuneis_firefox2.sh"
+    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/scripts-tuneis/tuneis_firefox.sh"
 
     try:
         print("Iniciando tuneis SSH...")
@@ -201,16 +201,17 @@ if __name__ == "__main__":
         print(f"Erro ao iniciar os túneis SSH: {e}")
         exit(1)
 
+
     portas = [
         35000, 35001, 35002, 35003, 35004
-    
         ]
+    
     contas = [
-        ("tenihe7269@hazhab.com", "testespootify1"),
-        ("keyac84280@inkight.com", "testespootify1"),
-        ("vevifav824@bamsrad.com", "testespootify1"),
-        ("yigili6002@deusa7.com", "testespootify1"),
-        ("pemimec246@hazhab.com", "testespootify1")
+        ("totoho6502@hazhab.com", "testespootify1"),
+        ("fevew66968@inkight.com", "testespootify1"),
+        ("cifihe5368@bamsrad.com", "testespootify1"),
+        ("bivolop886@bamsrad.com", "testespootify1"),
+        ("kijid36304@jazipo.com", "testespootify1")
         ]
 
     processos = []

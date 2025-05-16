@@ -147,8 +147,9 @@ def login_spotify(driver, conta, porta):
         webplayer = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']")))
         webplayer.click()
     except Exception as e:
-        print(f"PEGOU NAO ESSA PORRAAAA {e}")
-
+        print(f"PEGOU NAO ESSA PORRAAAA {porta}{e}")
+        driver.quit()
+        
 def tocar_playlist(driver, nome_playlist):
     try:
         # Clica na playlist com base no nome

@@ -108,7 +108,7 @@ def setup_webdriver(url, porta):
     options.set_preference("network.proxy.socks_port", porta)
     options.set_preference("network.proxy.socks_version", 5) 
     options.set_preference("network.proxy.socks_remote_dns", True)
-    # options.add_argument("-headless")
+    options.add_argument("-headless")
     
     try:
         driver = webdriver.Firefox(service=service, options=options)
