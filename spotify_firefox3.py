@@ -206,7 +206,6 @@ if __name__ == "__main__":
     # 35556,
     contas = [
         ("bokehox847@hazhab.com", "testespootify1"),
-        # ("mocal26211@inkight.com", "testespootify1"), # conta banida
         ("hipat16822@magpit.com", "testespootify1"),
         ("tagava8450@bamsrad.com", "testespootify1"),
         ("vehape5044@daupload.com", "testespootify1")
