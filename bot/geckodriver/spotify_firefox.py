@@ -191,7 +191,7 @@ def fechar_cookies(driver):
 
 if __name__ == "__main__":
 
-    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/scripts-tuneis/tuneis_firefox.sh"
+    caminho_tuneis = "C:/Users/Spootify/dev/Spootify/connections/tuneis_firefox.sh"
 
     try:
         print("Iniciando tuneis SSH...")
@@ -207,11 +207,11 @@ if __name__ == "__main__":
         ]
     
     contas = [
-        ("vajeraw617@daupload.com", "testespootify1"),
-        ("garica6074@inkight.com", "testespootify1"),
-        ("ciden85524@deusa7.com", "testespootify1"),
-        ("tavabin855@hazhab.com", "testespootify1"),
-        ("lixihoj318@jazipo.com", "testespootify1")
+        ("", "testespootify1"),
+        ("", "testespootify1"),
+        ("", "testespootify1"),
+        ("", "testespootify1"),
+        ("", "testespootify1")
         ]
 
     processos = []

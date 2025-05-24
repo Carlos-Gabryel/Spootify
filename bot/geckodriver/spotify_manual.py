@@ -15,8 +15,8 @@ ua = UserAgent(
     platforms=['desktop', 'mobile']
 )
 
-porta = 35000
-conta=("bivolop886@bamsrad.com", "testespootify1")
+porta = 
+conta=("", "testespootify1")
 
 def setup_webdriver(url, porta):
     service = Service()  

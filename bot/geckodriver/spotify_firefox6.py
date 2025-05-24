@@ -206,11 +206,11 @@ if __name__ == "__main__":
         35570, 35571, 35572, 35573, 35574 
         ]
     contas = [
-        ("rewebi6611@hazhab.com", "testespootify1"),
-        ("lohenep686@daupload.com", "testespootify1"),
-        ("hevahe8879@neuraxo.com", "testespootify1"),
-        ("vejege7939@bamsrad.com", "testespootify1"),
-        ("rodec59165@neuraxo.com", "testespootify1")
+        ("", "testespootify1"),
+        ("", "testespootify1"),
+        ("", "testespootify1"),
+        ("", "testespootify1"),
+        ("", "testespootify1")
         ]
 
     processos = []

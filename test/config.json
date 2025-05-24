@@ -1,0 +1,24 @@
+{
+  "34567": {
+    "ip": "191.252.196.23",
+    "contas": [
+      ["", "testespootify1"],
+      ["", "testespootify1"]
+    ]
+  },
+  "34568": {
+    "ip": "191.252.179.221",
+    "contas": [
+      ["", "testespootify1"],
+      ["", "testespootify1"]
+    ]
+  },
+  "34569": {
+    "ip": "191.252.220.28",
+    "contas": [
+      ["", "testespootify1"],
+      ["", "testespootify1"]
+    ]
+  }
+}
+

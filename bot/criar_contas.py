@@ -1,6 +1,6 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,9 +11,6 @@ import requests
 import gc
 import csv
 
-
-# import gc
-
 ua = UserAgent(
     browsers=["chrome", "firefox", "safari", "edge"],
     os=["Windows", "Mac", "Linux"],
@@ -22,6 +19,7 @@ ua = UserAgent(
 
 senha_padrao = "testespootify1"
 
+porta = 35567
 
 def funcao_geral():
     global email_gerado
@@ -245,21 +243,15 @@ def setup_driver(url):
     service = Service()
     options = Options()
 
-    # options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-logging")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-extensions")
-    options.add_argument("--start-maximized")
-    options.add_argument("--disable-application-cache")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
-    options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument(f"user-agent={ua.random}")
+    options.set_preference("network.proxy.type", 1)
+    options.set_preference("network.proxy.socks", 'localhost')
+    options.set_preference("network.proxy.socks_port", porta)
+    options.set_preference("network.proxy.socks_version", 5) 
+    options.set_preference("network.proxy.socks_remote_dns", True)
 
     try:
-        driver = webdriver.Chrome(service=service, options=options)
+        driver = webdriver.Firefox(service=service, options=options)
         driver.get(url)
         print(f"WebDriver iniciado com sucesso: {driver}")
         return driver
