@@ -1,24 +1,14 @@
 {
-  "34567": {
-    "ip": "191.252.196.23",
-    "contas": [
-      ["", "testespootify1"],
-      ["", "testespootify1"]
-    ]
-  },
-  "34568": {
-    "ip": "191.252.179.221",
-    "contas": [
-      ["", "testespootify1"],
-      ["", "testespootify1"]
-    ]
-  },
-  "34569": {
-    "ip": "191.252.220.28",
-    "contas": [
-      ["", "testespootify1"],
-      ["", "testespootify1"]
-    ]
-  }
+  "proxies": [
+    {
+      "host": "198.23.239.134",
+      "port": 6540,
+      "username": "pooltvkb",
+      "password": "62hewpqliwiw",
+      "contas": [
+        ["hihih29463@betzenn.com", "testespootify1"],
+        ["mabet19573@daxiake.com", "testespootify1"]
+      ]
+    }
+  ]
 }
-
