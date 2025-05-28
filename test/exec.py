@@ -68,10 +68,7 @@ def worker(porta, contas):
             index = (index + 1) % len(contas)
             # Pequena pausa antes de reabrir
             time.sleep(5)
-if __name__ == '__main__':
-    # Inicia túneis SSH antes (se necessário)
-    # subprocess.run([...])
-    
+if __name__ == '__main__': 
     with open('config.json') as f:
         config = json.load(f)
 

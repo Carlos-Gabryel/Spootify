@@ -19,21 +19,19 @@ ua = UserAgent(
 
 senha_padrao = "testespootify1"
 
-porta = 35567
-
 def funcao_geral():
     global email_gerado
 
-    driver = setup_driver("https://temp-mail.org/pt/")
+    driver = setup_driver("https://temp-mail.io/en")
 
     if driver:
         try:
             # Espera até que o campo contenha um e-mail válido
             email_presente = WebDriverWait(driver, 20).until(
-                lambda d: "@" in d.find_element(By.ID, "mail").get_attribute("value")
+                lambda d: "@" in d.find_element(By.ID, "email").get_attribute("value")
             )
             if email_presente:
-                email_gerado = driver.find_element(By.ID, "mail").get_attribute("value")
+                email_gerado = driver.find_element(By.ID, "email").get_attribute("value")
                 print(f"E-mail gerado: {email_gerado}")
 
                 abrir_spotify(driver)
