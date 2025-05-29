@@ -66,7 +66,7 @@ def login_spotify(driver, conta):
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button'))).click()
     WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']"))).click()
 
-def tocar_playlist(driver, nome_playlist="PURO SUCO DO BRASIL"):
+def tocar_playlist(driver, nome_playlist="Léo Foguete 2025  🚀 As Melhores | Obrigado Deus | Última Noite | Cópia Proibida | Quem de Nós Dois"):
     try:
         # Clica na playlist com base no nome
         playlist = WebDriverWait(driver, 15).until(
@@ -121,12 +121,8 @@ def worker(proxy_info):
             print(f"[Proxy {proxy_host}:{proxy_port}] Driver encerrado. Alternando conta.")
             index = (index + 1) % len(contas)
             time.sleep(5)
-<<<<<<< HEAD
-if __name__ == '__main__': 
-=======
 
 if __name__ == '__main__':
->>>>>>> 19b5a5add7997b88a45e6101d5154f5f36186a6b
     with open('config.json') as f:
         config = json.load(f)
 
