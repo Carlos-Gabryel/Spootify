@@ -66,7 +66,12 @@ def login_spotify(driver, conta):
     WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button'))).click()
     WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']"))).click()
 
-def tocar_playlist(driver, nome_playlist="Léo Foguete 2025  🚀 As Melhores | Obrigado Deus | Última Noite | Cópia Proibida | Quem de Nós Dois"):
+playlists = [
+            'Léo Foguete 2025  🚀 As Melhores | Obrigado Deus | Última Noite | Cópia Proibida | Quem de Nós Dois', 
+            'Léo Foguete 🚀 2025 - Dona - O Coração Que Você Quer Entrar Tem Dona - Cópia Proibida - É Hit'
+        ]
+
+def tocar_playlist(driver, nome_playlist=random.choice(playlists)): 
     try:
         # Clica na playlist com base no nome
         playlist = WebDriverWait(driver, 15).until(
@@ -74,10 +79,10 @@ def tocar_playlist(driver, nome_playlist="Léo Foguete 2025  🚀 As Melhores | 
                 )))
         playlist.click()
         print(f"Playlist encontrada: {nome_playlist}")
-    except:
-        print(f"Não selecionou a playlist {nome_playlist}")
+    except Exception as e:
+        print(f"Não foi possível selecionar a playlist {nome_playlist} - {e}")
 
-    time.sleep(10)
+    time.sleep(random.uniform(8, 12))
     try:
         botao_play = WebDriverWait(driver, 15).until(
             EC.element_to_be_clickable((
@@ -103,16 +108,32 @@ def worker(proxy_info):
     proxy_pass = proxy_info["password"]
     contas = proxy_info["contas"]
     index = 0
+
     while True:
         conta = contas[index]
         print(f"[Proxy {proxy_host}:{proxy_port}] Ciclo conta: {conta[0]}")
         driver = setup_webdriver(proxy_host, proxy_port, proxy_user, proxy_pass)
+        musica_atual = ""
+        contador_plays = 0
         try:
             login_spotify(driver, conta)
             tocar_playlist(driver)
-            wait_time = random.uniform(300, 310)
+            wait_time = random.uniform(3600, 4000)
             print(f"[Proxy {proxy_host}:{proxy_port}] Aguardando {wait_time/60:.2f} minutos")
-            time.sleep(wait_time)
+
+            start_time = time.time()
+            while time.time() - start_time < wait_time:
+                try:
+                    buscar_musica = driver.find_element(By.CSS_SELECTOR, '[data-testid="now-playing-widget"]').text
+                    buscar_musica = buscar_musica.replace("Tocando agora", "").strip()
+                    if buscar_musica != musica_atual:
+                        contador_plays += 1
+                        musica_atual = buscar_musica
+                        print(f"[Proxy {proxy_host}:{proxy_port}] Nova faixa encontrada play: {contador_plays}")
+                except Exception as e:
+                    print(f'[Proxy {proxy_host}:{proxy_port}] Erro ao buscar música: {e}')
+                time.sleep(10)  # Ajuste o intervalo conforme necessário
+
         except Exception as e:
             print(f"[Proxy {proxy_host}:{proxy_port}] Erro: {e}")
         finally:
