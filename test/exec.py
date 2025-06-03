@@ -59,12 +59,33 @@ def setup_webdriver(proxy_host, proxy_port, proxy_user, proxy_pass):
     return driver
 
 def login_spotify(driver, conta):
+    # time.sleep(30000)
     email, senha = conta
     print(f"Fazendo login na conta: {email}")
-    WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, 'login-username'))).send_keys(email)
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'login-password'))).send_keys(senha)
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button'))).click()
-    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']"))).click()
+    
+    input_email = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, 'login-username')))
+
+    if input_email:
+        input_email.send_keys(email)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button'))).click()
+
+    entrar_com_senha = WebDriverWait(driver, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//button[@data-encore-id='buttonTertiary']"))
+    )
+
+    if entrar_com_senha:
+        entrar_com_senha.click()
+        time.sleep(2)
+
+    input_senha = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.ID, 'login-password')))
+
+    if input_senha:
+        input_senha.send_keys(senha)
+        time.sleep(2)
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button'))).click()
+
+
+    WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-testid='web-player-link']"))).click()
 
 playlists = [
             'Léo Foguete 2025  🚀 As Melhores | Obrigado Deus | Última Noite | Cópia Proibida | Quem de Nós Dois', 
