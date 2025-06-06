@@ -67,6 +67,7 @@ def login_spotify(driver, conta):
 
     if input_email:
         input_email.send_keys(email)
+        time.sleep(2)
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'login-button'))).click()
 
     entrar_com_senha = WebDriverWait(driver, 15).until(
@@ -145,12 +146,17 @@ def worker(proxy_info):
             start_time = time.time()
             while time.time() - start_time < wait_time:
                 try:
-                    buscar_musica = driver.find_element(By.CSS_SELECTOR, '[data-testid="now-playing-widget"]').text
-                    buscar_musica = buscar_musica.replace("Tocando agora", "").strip()
+                    try:
+                        buscar_musica = driver.find_element(By.CSS_SELECTOR, '[data-testid="now-playing-widget"]').text
+                        buscar_musica = buscar_musica.replace("Tocando agora", "").strip()
+                    except:
+                        print("Musica nao encontrada, anuncio em tela.")
+
                     if buscar_musica != musica_atual:
                         contador_plays += 1
                         musica_atual = buscar_musica
                         print(f"[Proxy {proxy_host}:{proxy_port}] Nova faixa encontrada play: {contador_plays}")
+
                 except Exception as e:
                     print(f'[Proxy {proxy_host}:{proxy_port}] Erro ao buscar música: {e}')
                 time.sleep(10)  # Ajuste o intervalo conforme necessário
