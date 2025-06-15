@@ -33,10 +33,8 @@ def comportamento_clicar(
 
 
 def setup_webdriver(proxy_host, proxy_port):
-    vivaldi_path = "C:\\Users\\Spootify\\Application\\vivaldi.exe"  # ajuste para o seu sistema
 
     options = Options()
-    options.binary_location = vivaldi_path
 
     # Stealth flags
     options.add_argument("--disable-blink-features=AutomationControlled")

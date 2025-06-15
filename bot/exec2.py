@@ -46,7 +46,7 @@ def setup_webdriver(proxy_host, proxy_port):
         'proxy': {
             'http': f'http://{proxy_host}:{proxy_port}',
             'https': f'https://{proxy_host}:{proxy_port}',
-            'no_proxy': 'localhost,127.0.0.1'  # Ignorar localhost
+            # 'no_proxy': 'localhost,127.0.0.1'  # Ignorar localhost
         }
     }
     
