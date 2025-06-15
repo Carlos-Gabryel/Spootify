@@ -3,8 +3,8 @@ import time
 import random
 import multiprocessing
 import traceback
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service 
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -33,42 +33,30 @@ def comportamento_clicar(
 
 
 def setup_webdriver(proxy_host, proxy_port):
-    vivaldi_path = "C:\\Users\\Spootify\\Application\\vivaldi.exe"  # ajuste para o seu sistema
-
+    service = Service()  
     options = Options()
-    options.binary_location = vivaldi_path
-
-    # Stealth flags
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--disable-infobars")
-    options.add_argument("--disable-extensions")
-    options.add_argument("--enable-unsafe-webgpu")
-    options.add_argument("--enable-unsafe-swiftshader")
-    options.add_argument("--profile-directory=Default")
-    options.add_argument("--disable-plugins-discovery")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--lang=pt-BR")
-    options.add_argument(f"user-agent={ua.random}")
-    options.add_argument("--start-maximized")
-
-    # Configuração de proxy com seleniumwire
+    # Configuração do DRM
+    options.set_preference("media.eme.enabled", True)
+    options.set_preference("media.gmp-widevinecdm.visible", True)
+    options.set_preference("media.gmp-widevinecdm.enabled", True)
+    options.set_preference("media.gmp-manager.updateEnabled", True)
+    options.set_preference("media.gmp-provider.enabled", True)
+    
     seleniumwire_options = {
         'proxy': {
             'http': f'http://{proxy_host}:{proxy_port}',
             'https': f'https://{proxy_host}:{proxy_port}',
-            'no_proxy': 'localhost,127.0.0.1'
+            'no_proxy': 'localhost,127.0.0.1'  # Ignorar localhost
         }
     }
-
-    service = Service()
-
-    driver = webdriver.Chrome(
+    
+    driver = webdriver.Firefox(
         service=service,
         options=options,
         seleniumwire_options=seleniumwire_options
     )
+
+    driver.get("https://accounts.spotify.com/pt-BR")
     return driver
 
 
